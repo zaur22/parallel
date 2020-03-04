@@ -86,11 +86,11 @@ func TestContinue(t *testing.T) {
 
 		spawn("first", Continue, f1)
 		spawn("second", Continue, f2)
-		spawn("third", Fail, f3)
+		spawn("third", Continue, f3)
 		return nil
 	})
 
-	if err == nil || err.Error() != "some error" {
-		t.Errorf("expected value of error 'some error', got %v", err)
+	if err != nil {
+		t.Errorf("expected nil, got %v", err)
 	}
 }
