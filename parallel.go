@@ -107,9 +107,10 @@ func (s *Spawn) done() error {
 			continue
 		default:
 			s.logger.Printf("undefined trigger type: %v", res)
+               } 
 		case <- wgDone:
 			return nil
-               } 
-	}
+               
+	       }
 	}
 }
