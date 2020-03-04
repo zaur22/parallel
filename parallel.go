@@ -85,8 +85,15 @@ func (s *Spawn) SpawnFn(logPrefix string, t ShutdownTriggerType, f func()) {
 }
 
 func (s *Spawn) done() error {
-	for {
-		var res = <-s.functionDone
+        var wgDone = make(chan struct{}, 0)
+	go func() {
+        	s.wg.Wait()
+		wgDone <- struct{}{} 
+	}
+        for {
+ 
+		select{
+                case res := <-s.functionDone:
 		switch res {
 		case Fail:
 			s.cancel()
@@ -100,6 +107,9 @@ func (s *Spawn) done() error {
 			continue
 		default:
 			s.logger.Printf("undefined trigger type: %v", res)
-		}
+		case <- wgDone:
+			return nil
+               } 
+	}
 	}
 }
